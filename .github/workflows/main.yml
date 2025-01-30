@@ -1,0 +1,30 @@
+name: Extract RAR Files
+
+on:
+  push:
+    paths:
+      - '**/*.rar'
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install unrar
+      run: sudo apt-get install unrar
+
+    - name: Extract .rar files
+      run: |
+        mkdir extracted_files
+        for rarfile in *.rar; do
+          unrar x "$rarfile" "extracted_files/"
+        done
+
+    - name: Commit extracted files
+      run: |
+        git add extracted_files/
+        git commit -m "Extracted files from .rar"
+        git push
